@@ -9,9 +9,6 @@ variables {Ω : Type} [IncidencePlane Ω]
 variables {A B C D P Q R S : Ω}
 variables {ℓ r s t : Line Ω}
 
-lemma line_unique : A ≠ B → A ∈ ℓ → B ∈ ℓ → ℓ = line_through A B :=
-λ ab al bl, incidence ab al bl
-
 lemma distinct_lines_have_at_most_one_common_point
 	(hrs: r ≠ s)
 	(hAr: A ∈ r) (hAs: A ∈ s) (hBr: B ∈ r) (hBs: B ∈ s) :
@@ -126,29 +123,8 @@ begin
 	sorry
 end
 
-lemma collinear_subset (S T : set Ω) (hST : S ⊆ T) : collinear T → collinear S :=
+example (h : collinear ({A, B, C} : set Ω)) : collinear ({C, A, B} : set Ω) :=
 begin
-	intro h,
-	obtain ⟨ℓ, hℓ⟩ := h,
-	exact ⟨ℓ, λ P hP, hℓ (hST hP)⟩,
-end
-
-lemma collinear_union (S T : set Ω) {P Q : Ω} (h : P ≠ Q) (hS : collinear S) (hT : collinear T)
-(hPS : P ∈ S) (hPT : P ∈ T) (hQS : Q ∈ S) (hQT : Q ∈ T) : collinear (S ∪ T) :=
-begin
-	obtain ⟨u, hu⟩ := hS,
-	obtain ⟨v, hv⟩ := hT,
-	have huv : u = v,
-	{ apply equal_lines_of_contain_two_points h; tauto },
-	subst huv,
-	use u,
-	finish,
-end
-
-meta def extfinish : tactic unit := `[ext, finish]
-
-lemma collinear_of_equal {S T : set Ω} : S = T → (collinear S ↔ collinear T) :=
-begin
-	intro h,
-	subst h,
+    rw collinear_of_equal ({C, A, B} : set Ω) ({A, B, C} : set Ω),
+    exact h,
 end
