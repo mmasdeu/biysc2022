@@ -114,13 +114,18 @@ begin
   -- With lemma same_side_trans_of_noncollinear: same_side ℓ E C
   have hEC := same_side_trans_of_noncollinear hECB hEB h2,
   -- With lemma same_side_trans_of_noncollinear, same_side ℓ A C
-  have hAC := same_side_trans_of_noncollinear hACE hAE hEC, 
-  exact hAC,
+  exact same_side_trans_of_noncollinear hACE hAE hEC, 
 end
 
 lemma same_side_trans_general : same_side ℓ A B → same_side ℓ B C → same_side ℓ A C :=
 begin
-  sorry
+  by_cases h : collinear ({A, C, B} : set Ω),
+  {
+    apply same_side_trans_of_collinear h,
+  },
+  {
+    apply same_side_trans_of_noncollinear h,
+  }  
 end
 
 lemma at_least_two_classes (ℓ : Line Ω):
@@ -146,5 +151,11 @@ end
 lemma at_most_two_classes_general (hA : A ∉ ℓ) (hB : B ∉ ℓ) (hC : C ∉ ℓ)
     (hBneqC : B ≠ C) (hAB: ¬ same_side ℓ A B) (hAC: ¬ same_side ℓ A C): same_side ℓ B C :=
 begin
-  sorry
+  by_cases h : collinear ({A, B, C} : set Ω),
+  {
+    apply at_most_two_classes_of_collinear hA hB hC hBneqC hAB hAC h,
+  },
+  {
+    apply at_most_two_classes_of_noncollinear hA hB hC hBneqC hAB hAC h,
+  }
 end
