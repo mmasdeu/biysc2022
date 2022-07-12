@@ -110,20 +110,44 @@ lemma between_points_share_line (hAr : A ∈ r) (hCr : C ∈ r) :
 begin
     intro H,
 	have h := collinear_of_between H,
-    sorry
+    rcases h with ⟨s, ⟨h1,h2,h3⟩⟩,
+    have hAC : A ≠ C,
+    {
+        intro hAC,
+        rw hAC at H,
+        exact (no_point_between_a_point C B).mp H,
+    },
+    have htmp : r = s := equal_lines_of_contain_two_points hAC hAr h1 hCr h3,
+    rw htmp,
+    exact h2,
 end
+
 
 lemma between_points_share_line_v2 (hAr : A ∈ r) (hBr : B ∈ r) : 
 	(A * B * C) → C ∈ r :=
 begin
-	sorry
+    intro H,
+	have h := collinear_of_between H,
+    rcases h with ⟨s, ⟨h1,h2,h3⟩⟩,     
+    have htmp : r = s := equal_lines_of_contain_two_points (different_of_between H).1 hAr h1 hBr h2,
+    rw htmp,
+    exact h3,
 end
 
 lemma collinear_of_collinear_collinear (hAB : A ≠ B) (hABC : collinear ({A, B, C} : set Ω))
 (hABD : collinear ({A, B, D} : set Ω)) :
 collinear ({A, C, D} : set Ω) :=
 begin
-	sorry
+    cases hABC with r hr,
+    cases hABD with s hs,
+    simp at hr hs,
+    have hrs : r = s,
+    {
+        apply equal_lines_of_contain_two_points hAB hr.1 hs.1 hr.2.1 hs.2.1,
+    },
+    use r,
+    simp,
+    repeat {split}; finish,
 end
 
 example (h : collinear ({A, B, C} : set Ω)) : collinear ({C, A, B} : set Ω) :=
