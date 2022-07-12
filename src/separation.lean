@@ -22,6 +22,23 @@ begin
   exact same_side_symmetric',
 end
 
+lemma collinear_iff_on_line_through (h : A ≠ B) : collinear ({A, B, C} : set Ω) ↔ C ∈ line_through A B :=
+begin
+split,
+{
+  intro h1,
+  rcases h1 with ⟨ℓ, hℓ⟩,
+  simp at hℓ,
+  rw ←(incidence h hℓ.1 hℓ.2.1),
+  exact hℓ.2.2,
+},
+{
+  intro h1,
+  use line_through A B,
+  simp [h1],
+}
+end
+
 lemma same_side_trans_of_noncollinear (h : ¬ collinear ({A, C, B} : set Ω)):
     same_side ℓ A B → same_side ℓ B C → same_side ℓ A C :=
 begin
@@ -131,7 +148,61 @@ end
 lemma at_least_two_classes (ℓ : Line Ω):
       ∃ A B : Ω, (A ∉ ℓ) ∧ (B ∉ ℓ) ∧ (¬ same_side ℓ A B) :=
 begin
-  sorry
+  cases (exists_point_on_line ℓ) with Q hQ,
+  cases (exists_point_not_on_line ℓ) with P hP,
+  have hPQ:P ≠ Q,
+  {
+    intro hQQQQ,
+    apply hP,
+    rw hQQQQ,
+    exact hQ,
+  },
+  cases (point_on_ray hPQ) with R hPQR,
+  have hRRQQ: Q ≠ R,
+    {
+    have fact:=different_of_between hPQR,
+    exact fact.2.2,
+    },
+  have hR: R ∉ ℓ,
+  {
+    have hPP: P ∈ line_through Q R,
+    {
+      rw between_symmetric at hPQR,
+      have htmp : line_through Q R = line_through R Q,
+      {
+        apply equal_lines_of_contain_two_points hRRQQ;
+        simp,
+      },
+      rw htmp,
+      exact between_points_share_line_v2 (line_through_left R Q) (line_through_right R Q) hPQR,
+    },
+    intro hr,
+    apply hP,
+    rw incidence hRRQQ hQ hr,
+    exact hPP,
+  },
+  use P,
+  use R,
+  split,
+  exact hP,
+  split,
+  exact hR,
+  have hhQ: Q ∈ P⬝R,
+  {
+    simp,
+    right,
+    right,
+    exact hPQR,
+  }, 
+  intro h,
+  unfold same_side at h,
+  have hQQ:Q ∈ pts (P⬝R) ∩ ℓ,
+  {
+    split,
+    exact hhQ,
+    exact hQ,
+  },
+  exact set.eq_empty_iff_forall_not_mem.mp h Q hQQ,
 end
 
 lemma at_most_two_classes_of_noncollinear (hA : A ∉ ℓ) (hB : B ∉ ℓ) (hC : C ∉ ℓ)
