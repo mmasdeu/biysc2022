@@ -22,6 +22,11 @@ begin
   exact same_side_symmetric',
 end
 
+lemma different_side_symmetric : ¬ same_side ℓ A B ↔ ¬ same_side ℓ B A :=
+begin
+  exact iff.not same_side_symmetric,
+end
+
 lemma collinear_iff_on_line_through (h : A ≠ B) : collinear ({A, B, C} : set Ω) ↔ C ∈ line_through A B :=
 begin
 split,
@@ -449,7 +454,57 @@ lemma at_most_two_classes_of_collinear (hA : A ∉ ℓ) (hB : B ∉ ℓ) (hC : C
     (hBneqC : B ≠ C) (hAB: ¬ same_side ℓ A B) (hAC: ¬ same_side ℓ A C)
     (h : collinear ({A, B, C} : set Ω)) : same_side ℓ B C :=
 begin
-  sorry
+  -- Create and prove hypotheses to satisfy parameters of lemma auxiliary_point
+   by_cases hBneqA: B = A,
+  {
+    exfalso,
+    apply hAB,
+    rw hBneqA,
+    unfold same_side,
+    simp,
+    exact hA,
+  },
+  by_cases hCneqA: C = A,
+  {
+    exfalso,
+    apply hAC,
+    rw hCneqA,
+    unfold same_side,
+    simp,
+    exact hA,
+  },
+  rw collinear_of_equal ({A, B, C} :set Ω)({B, C, A} :set Ω) at h,
+  -- Use lemma auxiliary_point
+  -- ∃ E , same_side ℓ B E , BCE,EAC,BAE non collinear
+  have h1 := auxiliary_point ℓ h hB hC hA hBneqC hBneqA hCneqA,
+  rcases h1 with ⟨D, E, ⟨hD, hE, hBE, hDBE, hBCE, hEAC, hBAE⟩⟩,
+  -- Create and prove hyptoheses to satisfy parameters of lemma same_side_trans_of_noncollinear
+  -- Use lemma same_side_trans_of_noncollinear to prove that ¬ same_side ℓ E A by contradiction
+  have hEA : ¬ same_side ℓ E A,
+  {
+    by_contradiction hEA,
+    rw collinear_of_equal ({B, A, E} :set Ω)({A, B, E} :set Ω) at hBAE,
+    rename hBAE hABE,
+    have hAE : same_side ℓ A E := same_side_symmetric.mp hEA,
+    have hEB : same_side ℓ E B := same_side_symmetric.mp hBE,
+    have hAB := same_side_trans_of_noncollinear hABE hAE hEB,
+    finish,
+  },
+  have hAE : ¬ same_side ℓ A E := different_side_symmetric.mp hEA,
+  have hEneqC: E ≠ C,
+  {
+    intro hEeqC,
+    rw hEeqC at hBCE,
+    apply hBCE,
+    use line_through B C,
+    simp,
+  },
+  rw collinear_of_equal ({E, A, C} :set Ω)({A, E, C} :set Ω) at hEAC,
+  rename hEAC hAEC,
+  -- Use lemma at_most_two_classes_of_noncollinear to prove that same_side ℓ E C
+  have hEC := at_most_two_classes_of_noncollinear hA hE hC hEneqC hAE hAC hAEC,
+  -- Use lemma same_side_trans_of_noncollinear to prove that same_side ℓ B C
+  exact same_side_trans_of_noncollinear hBCE hBE hEC,  
 end
 
 lemma at_most_two_classes_general (hA : A ∉ ℓ) (hB : B ∉ ℓ) (hC : C ∉ ℓ)
