@@ -104,10 +104,13 @@ begin
     all_goals {simp, tauto},
 end
 
+
 lemma between_points_share_line (hAr : A ∈ r) (hCr : C ∈ r) : 
 	(A * B * C) → B ∈ r :=
 begin
-	sorry
+    intro H,
+	have h := collinear_of_between H,
+    sorry
 end
 
 lemma between_points_share_line_v2 (hAr : A ∈ r) (hBr : B ∈ r) : 
