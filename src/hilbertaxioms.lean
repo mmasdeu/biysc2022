@@ -95,8 +95,7 @@ notation A `*` B `*` C := IncidencePlane.between A B C
 -- A1
 @[simp] lemma line_through_left (P Q : Ω) : P ∈ (line_through P Q) := line_through_left' P Q
 @[simp] lemma line_through_right (P Q : Ω) : Q ∈ (line_through P Q) := line_through_right' P Q
-lemma incidence {P Q : Ω} {ℓ : Line Ω} : P ≠ Q → P ∈ ℓ → Q ∈ ℓ → ℓ = line_through P Q
-:= incidence'
+lemma incidence {P Q : Ω} {ℓ : Line Ω} : P ≠ Q → P ∈ ℓ → Q ∈ ℓ → ℓ = line_through P Q := incidence'
 
 -- A2
 lemma line_contains_two_points (ℓ : Line Ω) : ∃ P Q : Ω, P ≠ Q ∧ ℓ = line_through P Q
@@ -122,11 +121,6 @@ lemma pasch {A B C D : Ω} {ℓ : Line Ω} (hnc: ¬ C ∈ line_through A B)
 A set of points is collinear if they all lie on some line
 -/
 def collinear (S : set Ω) : Prop := ∃ (ℓ : Line Ω), ∀ {P : Ω}, P ∈ S → P ∈ ℓ
-
-/--
-Two lines intersect if they share a point
--/
-def intersect (r s : Line Ω) : Prop := ∃ A, A ∈ r ∧ A ∈ s
 
 
 -- Next we introduce the notion of a Segment.

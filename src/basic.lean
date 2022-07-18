@@ -133,25 +133,3 @@ begin
     rw htmp,
     exact h3,
 end
-
-lemma collinear_of_collinear_collinear (hAB : A ≠ B) (hABC : collinear ({A, B, C} : set Ω))
-(hABD : collinear ({A, B, D} : set Ω)) :
-collinear ({A, C, D} : set Ω) :=
-begin
-    cases hABC with r hr,
-    cases hABD with s hs,
-    simp at hr hs,
-    have hrs : r = s,
-    {
-        apply equal_lines_of_contain_two_points hAB hr.1 hs.1 hr.2.1 hs.2.1,
-    },
-    use r,
-    simp,
-    repeat {split}; finish,
-end
-
-example (h : collinear ({A, B, C} : set Ω)) : collinear ({C, A, B} : set Ω) :=
-begin
-    rw collinear_of_equal ({C, A, B} : set Ω) ({A, B, C} : set Ω),
-    exact h,
-end
